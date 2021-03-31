@@ -20,8 +20,8 @@ def scrape():
     soup = bs(html, 'html.parser')
     result_news = soup.find('div', class_='list_text')
 
-    news_title = result_news.find('div', class_='content_title').text
-    news_paragraph = result_news.find('div', class_='article_teaser_body').text
+    scrape_dict['News Title'] = result_news.find('div', class_='content_title').text
+    scrape_dict['News Paragraph'] = result_news.find('div', class_='article_teaser_body').text
 
     # URL of Space Images - Mars
     url_images = 'https://spaceimages-mars.com/'
@@ -31,9 +31,9 @@ def scrape():
     html = browser.html
     soup = bs(html, 'html.parser')
     result_images = soup.find('div', class_='header')
-        
+
     featured_image_url = result_images.find('img', class_='headerimage fade-in')
-    featured_image_url = url_images + featured_image_url['src']
+    scrape_dict['Featured Image'] = url_images + featured_image_url['src']
 
     # URL for Mars Facts table
     url_marsfacts = 'https://galaxyfacts-mars.com/'
@@ -96,7 +96,6 @@ def scrape():
         image_url_list.append(url_hemispheres + str(big_image))
 
     # make list of dictionaries from lists
-    hemi_images = [{ 'title': hemisphere_list[i], 'img_url': image_url_list[i] } for i in range( len(image_url_list) )]
+    scrape_dict['Hemisphere Images'] = [{ 'title': hemisphere_list[i], 'img_url': image_url_list[i] } for i in range( len(image_url_list) )]
 
-    return
-    
+    return scrape_dict
