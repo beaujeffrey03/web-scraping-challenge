@@ -6,7 +6,7 @@ import pandas as pd
 
 def scrape():
 
-    scrape_dict = {}
+    mars_scrape = {}
 
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
@@ -20,8 +20,8 @@ def scrape():
     soup = bs(html, 'html.parser')
     result_news = soup.find('div', class_='list_text')
 
-    scrape_dict['News Title'] = result_news.find('div', class_='content_title').text
-    scrape_dict['News Paragraph'] = result_news.find('div', class_='article_teaser_body').text
+    mars_scrape['news_title'] = result_news.find('div', class_='content_title').text
+    mars_scrape['news_paragraph'] = result_news.find('div', class_='article_teaser_body').text
 
     # URL of Space Images - Mars
     url_images = 'https://spaceimages-mars.com/'
@@ -33,7 +33,7 @@ def scrape():
     result_images = soup.find('div', class_='header')
 
     featured_image_url = result_images.find('img', class_='headerimage fade-in')
-    scrape_dict['Featured Image'] = url_images + featured_image_url['src']
+    mars_scrape['featured_image'] = url_images + featured_image_url['src']
 
     # URL for Mars Facts table
     url_marsfacts = 'https://galaxyfacts-mars.com/'
@@ -52,9 +52,8 @@ def scrape():
 
     # Convert back to html
     html_table = marsfacts_df.to_html()
-    html_table
-    html_table.replace('\n', '')
-    marsfacts_df.to_html('table.html')
+    html_table = html_table.replace('\n', '')
+    mars_scrape['mars_facts_table'] = html_table
 
     # URL for Hemispheres
     url_hemispheres = 'https://marshemispheres.com/'
@@ -96,6 +95,8 @@ def scrape():
         image_url_list.append(url_hemispheres + str(big_image))
 
     # make list of dictionaries from lists
-    scrape_dict['Hemisphere Images'] = [{ 'title': hemisphere_list[i], 'img_url': image_url_list[i] } for i in range( len(image_url_list) )]
+    mars_scrape['hemisphere_images'] = [{ 'title': hemisphere_list[i], 'img_url': image_url_list[i] } for i in range( len(image_url_list) )]
 
-    return scrape_dict
+    browser.quit()
+
+    return mars_scrape
